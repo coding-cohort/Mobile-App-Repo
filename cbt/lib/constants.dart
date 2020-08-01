@@ -3,9 +3,13 @@ import 'package:flutter/material.dart';
 // Theme Color
 const Color kPrimaryColor = Color(0xff649CF8);
 const Color kAccentColor = Color(0xff51F0FA);
+const Color kWhite = Colors.white;
+
+// Radius
+BorderRadius kBorderRadius = BorderRadius.circular(10);
 
 // Background
-const kBackgroundColor = LinearGradient(
+const kBackgroundGradient = LinearGradient(
   begin: Alignment.topCenter,
   end: Alignment.bottomCenter,
   colors: [
@@ -56,13 +60,13 @@ const kStyleButton = TextStyle(
 
 // Button Shape
 ShapeBorder kShapeButton = RoundedRectangleBorder(
-  borderRadius: BorderRadius.circular(10.0),
+  borderRadius: kBorderRadius,
   // side: BorderSide(color: kButtonBorderColor),
 );
 
 Decoration kButtonDecoration = BoxDecoration(
   gradient: kButtonColor,
-  borderRadius: BorderRadius.circular(10),
+  borderRadius: kBorderRadius,
 );
 
 // Text Field Decoration
@@ -81,4 +85,12 @@ const kTextFieldDecoration = InputDecoration(
     borderSide: BorderSide(color: kAccentColor, width: 2.0),
     borderRadius: BorderRadius.all(Radius.circular(10.0)),
   ),
+);
+
+// Avatar Container
+Widget avatar = Container(
+  height: 50,
+  width: 50,
+  margin: const EdgeInsets.all(18),
+  child: Image.asset('assets/images/female_1.png'),
 );

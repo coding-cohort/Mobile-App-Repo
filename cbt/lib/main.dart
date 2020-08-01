@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 import './constants.dart';
+import './screens/audio_screen.dart';
+import './screens/chat_and_audio.dart';
+import './screens/pain_data_entry_screen.dart';
+import './screens/signup_Screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,7 +21,7 @@ class MyApp extends StatelessWidget {
         accentColor: Color(0xff51F0FA),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(),
+      home: SignUpScreen(),
     );
   }
 }
@@ -28,7 +32,7 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          gradient: kBackgroundColor,
+          gradient: kBackgroundGradient,
         ),
         child: Center(
           child: RaisedButton(
