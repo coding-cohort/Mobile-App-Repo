@@ -54,7 +54,7 @@ const kStyleText = TextStyle(
 const kStyleButton = TextStyle(
   fontSize: 16,
   fontFamily: 'Lato',
-  fontWeight: FontWeight.w400,
+  fontWeight: FontWeight.bold,
   color: Colors.white,
 );
 
