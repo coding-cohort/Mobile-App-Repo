@@ -23,8 +23,9 @@ const kButtonColor = LinearGradient(
   begin: Alignment.topCenter,
   end: Alignment.bottomCenter,
   colors: [
-    Color(0xffF5F5F6),
+    // Color(0xffF5F5F6),
     Color(0xffB5B8F3),
+    Color.fromARGB(255, 110, 109, 200),
   ],
 );
 const Color kButtonBorderColor = Color(0xffF5F5F6);
@@ -41,15 +42,23 @@ const kToolbarColor = LinearGradient(
 
 // Text Style
 const kStyleTitle = TextStyle(
-  fontSize: 16,
+  fontSize: 24,
   fontFamily: 'Lato',
-  fontWeight: FontWeight.bold,
+  // fontWeight: FontWeight.bold,
   color: Colors.black,
 );
-const kStyleText = TextStyle(
+
+const kStyleTextBlack = TextStyle(
   fontSize: 16,
   fontFamily: 'Lato',
   color: Colors.black,
+  // fontWeight: FontWeight.bold,
+);
+const kStyleTextWhite = TextStyle(
+  fontSize: 16,
+  fontFamily: 'Lato',
+  color: Colors.white,
+  // fontWeight: FontWeight.bold,
 );
 const kStyleButton = TextStyle(
   fontSize: 16,
@@ -72,7 +81,7 @@ Decoration kButtonDecoration = BoxDecoration(
 // Text Field Decoration
 const kTextFieldDecoration = InputDecoration(
   hintText: 'Enter a value',
-  hintStyle: kStyleText,
+  hintStyle: kStyleTextBlack,
   contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
   border: OutlineInputBorder(
     borderRadius: BorderRadius.all(Radius.circular(10.0)),

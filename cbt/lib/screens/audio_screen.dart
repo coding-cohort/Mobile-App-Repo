@@ -37,7 +37,7 @@ class AudioScreen extends StatelessWidget {
         children: <Widget>[
           Text(
             '-- About CBT -- playing ---',
-            style: kStyleText,
+            style: kStyleTextBlack,
           ),
           IconButton(
             icon: Image.asset('assets/images/speaker.png'),

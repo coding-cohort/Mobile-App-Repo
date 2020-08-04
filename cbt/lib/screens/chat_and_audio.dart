@@ -17,13 +17,12 @@ class ChatAndAudio extends StatelessWidget {
                 SizedBox(
                   height: 30,
                 ),
-                BotTextBubble(
-                  content:
-                      'data datadata data data data data datadata data data data data datadata data data data data datadata data data data',
-                  color: Colors.white,
-                  align: Alignment.topLeft,
+                buildBotTextBubble(
+                  'data datadata data data data data datadata data data data data datadata data data data data datadata data data data',
+                  Colors.white,
+                  Alignment.topLeft,
                 ),
-                UserTextBubble(),
+                buildUserTextBubble(),
                 Align(
                   alignment: Alignment.topLeft,
                   child: Container(
@@ -57,60 +56,39 @@ class ChatAndAudio extends StatelessWidget {
   }
 }
 
-class UserTextBubble extends StatelessWidget {
-  const UserTextBubble({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.topRight,
-      child: Container(
-        margin: EdgeInsets.all(30),
-        padding: EdgeInsets.all(15),
-        decoration: BoxDecoration(
-          gradient: kButtonColor,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Text(
-          'Okay',
-          style: kStyleText,
-        ),
+Align buildUserTextBubble() {
+  return Align(
+    alignment: Alignment.topRight,
+    child: Container(
+      margin: EdgeInsets.all(30),
+      padding: EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        gradient: kButtonColor,
+        borderRadius: BorderRadius.circular(10),
       ),
-    );
-  }
+      child: Text(
+        'Okay',
+        style: kStyleTextWhite,
+      ),
+    ),
+  );
 }
 
-class BotTextBubble extends StatelessWidget {
-  final String content;
-  final Color color;
-  final Alignment align;
-
-  const BotTextBubble({
-    this.content,
-    this.color,
-    this.align,
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: align,
-      child: Container(
-        width: 215,
-        margin: EdgeInsets.symmetric(horizontal: 30),
-        padding: EdgeInsets.all(15),
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Text(
-          content,
-          style: kStyleText,
-        ),
+Align buildBotTextBubble(String content, Color color, Alignment align) {
+  return Align(
+    alignment: align,
+    child: Container(
+      width: 215,
+      margin: EdgeInsets.symmetric(horizontal: 30),
+      padding: EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(10),
       ),
-    );
-  }
+      child: Text(
+        content,
+        style: kStyleTextBlack,
+      ),
+    ),
+  );
 }

@@ -79,7 +79,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             buildLabel('Name'),
             SizedBox(height: 8),
             TextFormField(
-              style: kStyleText,
+              style: kStyleTextBlack,
               decoration: buildInputDecoration(),
               textInputAction: TextInputAction.next,
               onFieldSubmitted: (_) {
@@ -97,7 +97,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             buildLabel('Surname'),
             SizedBox(height: 8),
             TextFormField(
-              style: kStyleText,
+              style: kStyleTextBlack,
               decoration: buildInputDecoration(),
               textInputAction: TextInputAction.next,
               focusNode: _surnameFocusNode,
@@ -116,7 +116,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             buildLabel('Email'),
             SizedBox(height: 8),
             TextFormField(
-              style: kStyleText,
+              style: kStyleTextBlack,
               keyboardType: TextInputType.emailAddress,
               decoration: buildInputDecoration(),
               textInputAction: TextInputAction.next,
@@ -139,7 +139,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             buildLabel('Password'),
             SizedBox(height: 8),
             TextFormField(
-              style: kStyleText,
+              style: kStyleTextBlack,
               obscureText: true,
               decoration: buildInputDecoration(),
               textInputAction: TextInputAction.done,
