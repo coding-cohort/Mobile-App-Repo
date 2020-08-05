@@ -7,6 +7,11 @@ class AudioScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        // title: avatar,
+        backgroundColor: kPrimaryColor,
+        elevation: 0,
+      ),
       body: Container(
         decoration: BoxDecoration(gradient: kBackgroundGradient),
         child: SafeArea(
@@ -23,7 +28,7 @@ class AudioScreen extends StatelessWidget {
     );
   }
 
-  Container audioContainer() {
+  audioContainer() {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -37,7 +42,7 @@ class AudioScreen extends StatelessWidget {
         children: <Widget>[
           Text(
             '-- About CBT -- playing ---',
-            style: kStyleText,
+            style: kStyleTextBlack,
           ),
           IconButton(
             icon: Image.asset('assets/images/speaker.png'),

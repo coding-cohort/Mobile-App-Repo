@@ -5,6 +5,8 @@ import './screens/audio_screen.dart';
 import './screens/chat_and_audio.dart';
 import './screens/pain_data_entry_screen.dart';
 import './screens/signup_Screen.dart';
+import './screens/home_screen.dart';
+import './screens/update_account_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,11 +19,17 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'CBT',
       theme: ThemeData(
-        primaryColor: Color(0xff649CF8),
-        accentColor: Color(0xff51F0FA),
+        // primaryColor: Color(0xff649CF8),
+        // accentColor: Color(0xff51F0FA),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: SignUpScreen(),
+      home: HomeScreen(),
+      routes: {
+        UpdateAccountScreen.routeName: (ctx) => UpdateAccountScreen(),
+        PainDataEntryScreen.routeName: (ctx) => PainDataEntryScreen(),
+        ChatAndAudio.routeName: (ctx) => ChatAndAudio(),
+        AudioScreen.routeName: (ctx) => AudioScreen(),
+      },
     );
   }
 }

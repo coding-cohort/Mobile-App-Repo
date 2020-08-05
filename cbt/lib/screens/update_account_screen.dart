@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../constants.dart';
 
-class SignUpScreen extends StatefulWidget {
+class UpdateAccountScreen extends StatefulWidget {
+  static const routeName = '/update-screen';
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  _UpdateAccountScreenState createState() => _UpdateAccountScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _UpdateAccountScreenState extends State<UpdateAccountScreen> {
   final _surnameFocusNode = FocusNode();
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
@@ -32,6 +33,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: kPrimaryColor,
+        elevation: 0,
+        title: avatar,
+      ),
       body: Container(
         height: double.infinity,
         decoration: BoxDecoration(gradient: kBackgroundGradient),
@@ -39,31 +45,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: SafeArea(
             child: Column(
               children: <Widget>[
-                avatar,
-                Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    width: 230,
-                    padding: EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(
-                      'Managing pain can be tough.\n\n Get help from Debbie - sign up now!',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontFamily: 'Lato',
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
+                // avatar,
+                SizedBox(height: 30),
+                buildTextIntro(),
                 buildSignupForm(context),
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Align buildTextIntro() {
+    return Align(
+      alignment: Alignment.center,
+      child: Container(
+        width: 230,
+        padding: EdgeInsets.all(15),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Text(
+          'Update your account below\n\n\nEdit >>',
+          style: kStyleTextWhite,
+          textAlign: TextAlign.center,
         ),
       ),
     );
@@ -154,7 +160,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 }
                 return null;
               },
-              onSaved: (_) {},
+              onSaved: (_) {
+                Navigator.of(context).pop();
+              },
             ),
             SizedBox(height: 30),
             RaisedButton(
@@ -167,7 +175,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 decoration: kButtonDecoration,
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
-                  'Sign up now!',
+                  'Save',
                   style: kStyleButton,
                 ),
               ),

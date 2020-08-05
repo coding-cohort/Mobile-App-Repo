@@ -2,16 +2,47 @@ import 'package:flutter/material.dart';
 
 import '../constants.dart';
 
-class PainDataEntryScreen extends StatelessWidget {
+class PainDataEntryScreen extends StatefulWidget {
+  static const routeName = '/pain-entry';
+
+  @override
+  _PainDataEntryScreenState createState() => _PainDataEntryScreenState();
+}
+
+class _PainDataEntryScreenState extends State<PainDataEntryScreen> {
+  int _counter = 0;
+
+  void _incrementCounter() {
+    if (_counter < 5) {
+      setState(() {
+        _counter++;
+      });
+    }
+  }
+
+  void _decrementCounter() {
+    if (_counter > 0) {
+      setState(() {
+        _counter--;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: kPrimaryColor,
+        elevation: 0,
+        title: avatar,
+      ),
       body: Container(
         decoration: BoxDecoration(gradient: kBackgroundGradient),
         child: SafeArea(
           child: Column(
             children: <Widget>[
-              avatar,
+              // avatar,
+              SizedBox(height: 30),
               buildTextIntro(),
               SizedBox(height: 70),
               Container(
@@ -28,24 +59,13 @@ class PainDataEntryScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       FlatButton(
-                        onPressed: () {},
-                        child: PainEntryControl(
-                          text: '+',
-                        ),
+                        onPressed: _incrementCounter,
+                        child: buildPainControl('+'),
                       ),
-                      Text(
-                        '1',
-                        style: TextStyle(
-                          fontSize: 74,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w100,
-                        ),
-                      ),
+                      buildPainControl('$_counter'),
                       FlatButton(
-                        onPressed: () {},
-                        child: PainEntryControl(
-                          text: '-',
-                        ),
+                        onPressed: _decrementCounter,
+                        child: buildPainControl('-'),
                       ),
                     ],
                   ),
@@ -55,7 +75,9 @@ class PainDataEntryScreen extends StatelessWidget {
               RaisedButton(
                 shape: kShapeButton,
                 padding: EdgeInsets.all(0),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pop(context);
+                },
                 child: Container(
                   width: 100,
                   decoration: kButtonDecoration,
@@ -70,6 +92,17 @@ class PainDataEntryScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Text buildPainControl(String sign) {
+    return Text(
+      sign,
+      style: TextStyle(
+        fontSize: 74,
+        color: Colors.white,
+        fontWeight: FontWeight.w100,
       ),
     );
   }
@@ -90,26 +123,6 @@ class PainDataEntryScreen extends StatelessWidget {
           ),
           textAlign: TextAlign.center,
         ),
-      ),
-    );
-  }
-}
-
-class PainEntryControl extends StatelessWidget {
-  final String text;
-  const PainEntryControl({
-    this.text,
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: TextStyle(
-        fontSize: 74,
-        color: Colors.white,
-        fontWeight: FontWeight.w100,
       ),
     );
   }
