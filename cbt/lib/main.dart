@@ -26,6 +26,9 @@ class MyApp extends StatelessWidget {
       home: HomeScreen(),
       routes: {
         UpdateAccountScreen.routeName: (ctx) => UpdateAccountScreen(),
+        PainDataEntryScreen.routeName: (ctx) => PainDataEntryScreen(),
+        ChatAndAudio.routeName: (ctx) => ChatAndAudio(),
+        AudioScreen.routeName: (ctx) => AudioScreen(),
       },
     );
   }

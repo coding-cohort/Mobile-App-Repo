@@ -67,13 +67,8 @@ class _UpdateAccountScreenState extends State<UpdateAccountScreen> {
           borderRadius: BorderRadius.circular(10),
         ),
         child: Text(
-          'Managing pain can be tough.\n\n Get help from Debbie - sign up now!',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontFamily: 'Lato',
-            fontWeight: FontWeight.bold,
-          ),
+          'Update your account below\n\n\nEdit >>',
+          style: kStyleTextWhite,
           textAlign: TextAlign.center,
         ),
       ),
@@ -165,7 +160,9 @@ class _UpdateAccountScreenState extends State<UpdateAccountScreen> {
                 }
                 return null;
               },
-              onSaved: (_) {},
+              onSaved: (_) {
+                Navigator.of(context).pop();
+              },
             ),
             SizedBox(height: 30),
             RaisedButton(
@@ -178,7 +175,7 @@ class _UpdateAccountScreenState extends State<UpdateAccountScreen> {
                 decoration: kButtonDecoration,
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
-                  'Sign up now!',
+                  'Save',
                   style: kStyleButton,
                 ),
               ),

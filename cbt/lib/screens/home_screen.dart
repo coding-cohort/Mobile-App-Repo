@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../constants.dart';
 import '../widgets/toolkit.dart';
+import '../screens/pain_data_entry_screen.dart';
+import '../screens/chat_and_audio.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -11,9 +13,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  void bottomNavAction(BuildContext ctx) {
+  void bottomNavAction(BuildContext ctx, int index) {
     setState(() {
-      // _selectedIndex = index;
+      _selectedIndex = index;
     });
     if (_selectedIndex == 0) {
       showModalBottomSheet(
@@ -23,7 +25,10 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       );
     }
-    if (_selectedIndex == 1) {}
+    if (_selectedIndex == 1) {
+      print(_selectedIndex);
+      Navigator.of(context).pushNamed(PainDataEntryScreen.routeName);
+    }
     if (_selectedIndex == 2) {}
   }
 
@@ -48,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   'data datadata data data data data datadata data data data data datadata data data data data datadata data data data',
                   Colors.white,
                   Alignment.topLeft,
+                  context,
                 ),
                 buildUserTextBubble(),
               ],
@@ -73,14 +79,14 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
         onTap: (_selectedIndex) {
-          bottomNavAction(context);
+          bottomNavAction(context, _selectedIndex);
         },
       ),
     );
   }
 }
 
-Align buildUserTextBubble() {
+buildUserTextBubble() {
   return Align(
     alignment: Alignment.topRight,
     child: Container(
@@ -98,20 +104,28 @@ Align buildUserTextBubble() {
   );
 }
 
-Align buildBotTextBubble(String content, Color color, Alignment align) {
-  return Align(
-    alignment: align,
-    child: Container(
-      width: 215,
-      margin: EdgeInsets.symmetric(horizontal: 30),
-      padding: EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Text(
-        content,
-        style: kStyleTextBlack,
+buildBotTextBubble(
+    String content, Color color, Alignment align, BuildContext context) {
+  return InkWell(
+    focusColor: kAccentColor,
+    splashColor: kAccentColor,
+    onTap: () {
+      Navigator.of(context).pushNamed(ChatAndAudio.routeName);
+    },
+    child: Align(
+      alignment: align,
+      child: Container(
+        width: 215,
+        margin: EdgeInsets.symmetric(horizontal: 30),
+        padding: EdgeInsets.all(15),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Text(
+          content,
+          style: kStyleTextBlack,
+        ),
       ),
     ),
   );

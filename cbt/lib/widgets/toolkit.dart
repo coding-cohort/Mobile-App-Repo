@@ -1,6 +1,5 @@
 import 'package:cbt/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import '../screens/update_account_screen.dart';
 
 class Toolkit extends StatefulWidget {
