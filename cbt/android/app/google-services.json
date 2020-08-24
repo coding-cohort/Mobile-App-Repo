@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "640154976322",
+    "firebase_url": "https://cbtpain-ab5da.firebaseio.com",
+    "project_id": "cbtpain-ab5da",
+    "storage_bucket": "cbtpain-ab5da.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:640154976322:android:3a532bb7f4f2c71171addb",
+        "android_client_info": {
+          "package_name": "com.example.cbt"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "640154976322-qbh7hk8q2cfq88o29sg5tloe069oh1rf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxNr-RHwmUMbEuntLJ_kfPpaiYzvLQg80"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "640154976322-qbh7hk8q2cfq88o29sg5tloe069oh1rf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

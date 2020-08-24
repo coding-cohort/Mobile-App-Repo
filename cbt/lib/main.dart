@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import './constants.dart';
@@ -8,7 +9,9 @@ import './screens/signup_Screen.dart';
 import './screens/home_screen.dart';
 import './screens/update_account_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -29,6 +32,7 @@ class MyApp extends StatelessWidget {
         PainDataEntryScreen.routeName: (ctx) => PainDataEntryScreen(),
         ChatAndAudio.routeName: (ctx) => ChatAndAudio(),
         AudioScreen.routeName: (ctx) => AudioScreen(),
+        SignUpScreen.routeName: (ctx) => SignUpScreen(),
       },
     );
   }
