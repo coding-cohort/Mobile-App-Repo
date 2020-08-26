@@ -1,4 +1,5 @@
 import 'package:cbt/constants.dart';
+import 'package:cbt/screens/signup_Screen.dart';
 import 'package:flutter/material.dart';
 import '../screens/update_account_screen.dart';
 
@@ -82,7 +83,7 @@ class _ToolkitState extends State<Toolkit> {
               fit: BoxFit.contain,
             ),
             onPressed: () {
-              Navigator.of(context).pushNamed(UpdateAccountScreen.routeName);
+              Navigator.of(context).pushNamed(SignUpScreen.routeName);
             },
           ),
         ),
