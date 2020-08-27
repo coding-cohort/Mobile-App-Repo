@@ -1,10 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dialogflow/dialogflow_v2.dart';
 
 import '../constants.dart';
 import '../screens/audio_screen.dart';
+import 'package:flutter_dialogflow/v2/dialogflow_v2.dart';
 
-class ChatAndAudio extends StatelessWidget {
+class ChatAndAudio extends StatefulWidget {
   static const routeName = '/chat-and-audio';
+
+  @override
+  _ChatAndAudioState createState() => _ChatAndAudioState();
+}
+
+class _ChatAndAudioState extends State<ChatAndAudio> {
+  void response(query) async {
+    AuthGoogle authGoogle =
+        await AuthGoogle(fileJson: 'assets/chatbot-wgep-bda1aae8da3f.json')
+            .build();
+    Dialogflow dialogflow =
+        Dialogflow(authGoogle: authGoogle, language: Language.english);
+    AIResponse aiResponse = await dialogflow.detectIntent(query);
+    print(aiResponse.getListMessage());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,14 +39,23 @@ class ChatAndAudio extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 // avatar,
-                SizedBox(height: 30),
-                buildBotTextBubble(
-                  'data datadata data data data data datadata data data data data datadata data data data data datadata data data data',
-                  Colors.white,
-                  Alignment.topLeft,
+                // SizedBox(height: 30),
+                // buildBotTextBubble(
+                //   'data datadata data data data data datadata data data data data datadata data data data data datadata data data data',
+                //   Colors.white,
+                //   Alignment.topLeft,
+                // ),
+                // buildUserTextBubble(),
+                // buildAudioTextBubble(context),
+
+                Flexible(
+                  child: ListView(
+                    children: [],
+                  ),
                 ),
-                buildUserTextBubble(),
-                buildAudioTextBubble(context),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+                )
               ],
             ),
           ),

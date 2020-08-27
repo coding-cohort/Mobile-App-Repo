@@ -107,6 +107,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                   buildSignupForm(context),
+                  
                 ],
               ),
             ),
