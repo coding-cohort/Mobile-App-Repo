@@ -13,6 +13,8 @@ class ChatAndAudio extends StatefulWidget {
 }
 
 class _ChatAndAudioState extends State<ChatAndAudio> {
+  final _controller = TextEditingController();
+
   void response(query) async {
     AuthGoogle authGoogle =
         await AuthGoogle(fileJson: 'assets/chatbot-wgep-bda1aae8da3f.json')
@@ -55,6 +57,22 @@ class _ChatAndAudioState extends State<ChatAndAudio> {
                 ),
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: TextField(
+                          controller: _controller,
+                          decoration: InputDecoration.collapsed(hintText: 'Send your message'),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: 4.0),
+                        child: IconButton(icon: Icon(Icons.send),onPressed: () {
+                          
+                        },),
+                      )
+                    ],
+                  ),
                 )
               ],
             ),
