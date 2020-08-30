@@ -3,80 +3,70 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 import '../constants.dart';
 
 final _firestore = FirebaseFirestore.instance;
 final _auth = FirebaseAuth.instance;
 
-class SignUpScreen extends StatefulWidget {
-  static const routeName = '/signup-screen';
+class LoginScreen extends StatefulWidget {
+  static const routeName = '/login-screen';
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
-  DatabaseReference databaseReference =
-      FirebaseDatabase.instance.reference().child('users');
-  final _surnameFocusNode = FocusNode();
+class _LoginScreenState extends State<LoginScreen> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
   final _form = GlobalKey<FormState>();
 
-  TextEditingController nameController = TextEditingController();
-  TextEditingController surnameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-
+  String email;
+  String password;
   bool showSpinner = false;
 
   @override
   void dispose() {
-    _surnameFocusNode.dispose();
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
-    nameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    surnameController.dispose();
     super.dispose();
   }
 
   void _saveForm() async {
     _auth
-        .createUserWithEmailAndPassword(
+        .signInWithEmailAndPassword(
             email: emailController.text, password: passwordController.text)
         .then((result) {
-      databaseReference.set({
-        "name": nameController.text,
-        "surname": surnameController.text,
-        "email": emailController.text,
-      }).then((res) {
+      setState(() {
         showSpinner = false;
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
-        );
       });
+      Navigator.pushReplacement(context, MaterialPageRoute(
+        builder: (context) {
+          return HomeScreen();
+        },
+      ));
     }).catchError((err) {
+      print(err.message);
       showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Error"),
-              content: Text(err.message),
-              actions: [
-                FlatButton(
-                  child: Text("Ok"),
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Username or Password is Incorrect'),
+            actions: [
+              FlatButton(
                   onPressed: () {
-                    showSpinner = false;
                     Navigator.of(context).pop();
+                    setState(() {
+                      showSpinner = false;
+                    });
                   },
-                )
-              ],
-            );
-          });
+                  child: Text('Ok'))
+            ],
+          );
+        },
+      );
     });
   }
 
@@ -102,7 +92,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
-                        'Managing pain can be tough.\n\n Get help from Debbie - sign up now!',
+                        'Managing pain can be tough.\n\n Get help from Debbie - Login below!',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -130,42 +120,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         key: _form,
         child: Column(
           children: <Widget>[
-            buildLabel('Name'),
-            SizedBox(height: 8),
-            TextFormField(
-              style: kStyleTextBlack,
-              decoration: buildInputDecoration(),
-              textInputAction: TextInputAction.next,
-              controller: nameController,
-              onFieldSubmitted: (_) {
-                FocusScope.of(context).requestFocus(_surnameFocusNode);
-              },
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please provide your name';
-                }
-                return null;
-              },
-            ),
-            SizedBox(height: 12),
-            buildLabel('Surname'),
-            SizedBox(height: 8),
-            TextFormField(
-              style: kStyleTextBlack,
-              decoration: buildInputDecoration(),
-              textInputAction: TextInputAction.next,
-              focusNode: _surnameFocusNode,
-              controller: surnameController,
-              onFieldSubmitted: (_) {
-                FocusScope.of(context).requestFocus(_emailFocusNode);
-              },
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please provide your Surname';
-                }
-                return null;
-              },
-            ),
             SizedBox(height: 12),
             buildLabel('Email'),
             SizedBox(height: 8),
@@ -197,9 +151,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
               obscureText: true,
               decoration: buildInputDecoration(),
               textInputAction: TextInputAction.done,
-              controller: passwordController,
               focusNode: _passwordFocusNode,
               onFieldSubmitted: (_) {},
+              controller: passwordController,
               validator: (value) {
                 if (value.isEmpty) {
                   return 'Please provide your password';
@@ -228,7 +182,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 decoration: kButtonDecoration,
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
-                  'Sign up now!',
+                  'Login',
                   style: kStyleButton,
                 ),
               ),
