@@ -41,11 +41,10 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         showSpinner = false;
       });
-      Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) {
-          return HomeScreen();
-        },
-      ));
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
     }).catchError((err) {
       print(err.message);
       showDialog(
@@ -53,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
         builder: (context) {
           return AlertDialog(
             title: Text('Error'),
-            content: Text('Username or Password is Incorrect'),
+            content: Text(err.message),
             actions: [
               FlatButton(
                   onPressed: () {
