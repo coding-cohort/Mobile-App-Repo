@@ -53,7 +53,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
         "surname": surnameController.text,
         "email": emailController.text,
       }).then((res) {
-        showSpinner = false;
+        setState(() {
+          showSpinner = false;
+        });
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -70,7 +73,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 FlatButton(
                   child: Text("Ok"),
                   onPressed: () {
-                    showSpinner = false;
+                    setState(() {
+                      showSpinner = false;
+                    });
                     Navigator.of(context).pop();
                   },
                 )
