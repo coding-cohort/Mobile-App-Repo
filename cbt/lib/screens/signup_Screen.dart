@@ -48,7 +48,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         .createUserWithEmailAndPassword(
             email: emailController.text, password: passwordController.text)
         .then((result) {
-      databaseReference.set({
+      _firestore.collection('users').add({
         "name": nameController.text,
         "surname": surnameController.text,
         "email": emailController.text,
