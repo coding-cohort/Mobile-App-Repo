@@ -14,15 +14,23 @@ class ChatAndAudio extends StatefulWidget {
 
 class _ChatAndAudioState extends State<ChatAndAudio> {
   final _controller = TextEditingController();
+  List<Map> responses = [];
 
   void response(query) async {
+    print('in response');
     AuthGoogle authGoogle =
         await AuthGoogle(fileJson: 'assets/chatbot-wgep-bda1aae8da3f.json')
             .build();
     Dialogflow dialogflow =
         Dialogflow(authGoogle: authGoogle, language: Language.english);
     AIResponse aiResponse = await dialogflow.detectIntent(query);
-    print(aiResponse.getListMessage());
+    setState(() {
+      responses.insert(0, {
+        'data': 0,
+        'message': aiResponse.getListMessage()[0]['text']['text'][0].toString()
+      });
+      print(responses);
+    });
   }
 
   @override
@@ -30,53 +38,69 @@ class _ChatAndAudioState extends State<ChatAndAudio> {
     return Scaffold(
       appBar: AppBar(
         title: avatar,
+        centerTitle: true,
         backgroundColor: kPrimaryColor,
         elevation: 0,
       ),
       body: Container(
-        height: double.infinity,
         decoration: BoxDecoration(gradient: kBackgroundGradient),
-        child: SingleChildScrollView(
-          child: SafeArea(
-            child: Column(
-              children: <Widget>[
-                // avatar,
-                // SizedBox(height: 30),
-                // buildBotTextBubble(
-                //   'data datadata data data data data datadata data data data data datadata data data data data datadata data data data',
-                //   Colors.white,
-                //   Alignment.topLeft,
-                // ),
-                // buildUserTextBubble(),
-                // buildAudioTextBubble(context),
-
-                Flexible(
-                  child: ListView(
-                    children: [],
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      Flexible(
-                        child: TextField(
-                          controller: _controller,
-                          decoration: InputDecoration.collapsed(hintText: 'Send your message'),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.symmetric(horizontal: 4.0),
-                        child: IconButton(icon: Icon(Icons.send),onPressed: () {
-                          
-                        },),
-                      )
-                    ],
-                  ),
-                )
-              ],
+        child: Column(
+          // mainAxisSize: MainAxisSize.min,
+          // mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Flexible(
+                child: ListView.builder(
+              reverse: true,
+              itemCount: responses.length,
+              itemBuilder: (context, index) {
+                return responses[index]['data'] == 0
+                    ? Text(responses[index]['message'].toString())
+                    : Text(
+                        responses[index]['message'].toString(),
+                        textAlign: TextAlign.right,
+                      );
+              },
+            )),
+            Divider(
+              height: 3.0,
             ),
-          ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                children: [
+                  Flexible(
+                    child: TextField(
+                      controller: _controller,
+                      decoration: InputDecoration.collapsed(
+                          hintText: 'Send your message'),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 4.0),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.send,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        if (_controller.text.isEmpty) {
+                          print('empty');
+                        } else {
+                          setState(() {
+                            responses.insert(
+                                0, {'data': 1, 'message': _controller.text});
+                          });
+                          response(_controller.text);
+                          
+                          _controller.clear();
+                        }
+                      },
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );

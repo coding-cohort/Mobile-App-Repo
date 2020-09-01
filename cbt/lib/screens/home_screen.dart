@@ -1,10 +1,14 @@
+import 'package:cbt/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dialogflow/dialogflow_v2.dart';
 
 import '../constants.dart';
 import '../widgets/toolkit.dart';
 import '../screens/pain_data_entry_screen.dart';
 import '../screens/chat_and_audio.dart';
+import 'package:flutter_dialogflow/v2/dialogflow_v2.dart';
+import 'package:bubble/bubble.dart';
 
 User loggedInUser;
 
@@ -15,6 +19,23 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _auth = FirebaseAuth.instance;
+  final _controller = TextEditingController();
+  List<Map> responses = [];
+
+  void response(query) async {
+    AuthGoogle authGoogle =
+        await AuthGoogle(fileJson: 'assets/chatbot-wgep-bda1aae8da3f.json')
+            .build();
+    Dialogflow dialogflow =
+        Dialogflow(authGoogle: authGoogle, language: Language.english);
+    AIResponse aiResponse = await dialogflow.detectIntent(query);
+    setState(() {
+      responses.insert(0, {
+        'data': 0,
+        'message': aiResponse.getListMessage()[0]['text']['text'][0].toString()
+      });
+    });
+  }
 
   @override
   void initState() {
@@ -61,27 +82,87 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: avatar,
+        centerTitle: true,
         backgroundColor: kPrimaryColor,
         elevation: 0,
+        leading: IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () {
+              _auth.signOut();
+              Navigator.popUntil(
+                  context, ModalRoute.withName(LoginScreen.routeName));
+            }),
       ),
-      body: Container(
-        height: double.infinity,
-        decoration: BoxDecoration(gradient: kBackgroundGradient),
-        child: SingleChildScrollView(
-          child: SafeArea(
-            child: Column(
-              children: <Widget>[
-                // avatar,
-                SizedBox(height: 30),
-                buildBotTextBubble(
-                  'data datadata data data data data datadata data data data data datadata data data data data datadata data data data',
-                  Colors.white,
-                  Alignment.topLeft,
-                  context,
+      body: SafeArea(
+        child: Container(
+          decoration: BoxDecoration(gradient: kBackgroundGradient),
+          child: Column(
+            // mainAxisSize: MainAxisSize.min,
+            // mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              // avatar,
+              // SizedBox(height: 30),
+              // buildBotTextBubble(
+              //   'data datadata data data data data datadata data data data data datadata data data data data datadata data data data',
+              //   Colors.white,
+              //   Alignment.topLeft,
+              // ),
+              // buildUserTextBubble(),
+              // buildAudioTextBubble(context),
+
+              Flexible(
+                child: ListView.builder(
+                  // shrinkWrap: true,
+                  reverse: true,
+                  itemCount: responses.length,
+                  itemBuilder: (context, index) {
+                    return responses[index]['data'] == 0
+                        ? buildBotTextBubble(
+                            responses[index]['message'].toString())
+                        : buildUserTextBubble(
+                            responses[index]['message'].toString());
+                  },
                 ),
-                buildUserTextBubble(),
-              ],
-            ),
+              ),
+              Divider(
+                height: 3.0,
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: TextField(
+                        controller: _controller,
+                        decoration: InputDecoration.collapsed(
+                            hintText: 'Send your message'),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 4.0),
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.send,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          if (_controller.text.isEmpty) {
+                            print('empty');
+                          } else {
+                            setState(() {
+                              responses.insert(
+                                  0, {'data': 1, 'message': _controller.text});
+                            });
+                            response(_controller.text);
+                            _controller.clear();
+                          }
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
           ),
         ),
       ),
@@ -110,7 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-buildUserTextBubble() {
+buildUserTextBubble(String text) {
   return Align(
     alignment: Alignment.topRight,
     child: Container(
@@ -121,29 +202,28 @@ buildUserTextBubble() {
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
-        'Okay',
+        text,
         style: kStyleTextWhite,
       ),
     ),
   );
 }
 
-buildBotTextBubble(
-    String content, Color color, Alignment align, BuildContext context) {
+buildBotTextBubble(String content) {
   return InkWell(
     focusColor: kAccentColor,
     splashColor: kAccentColor,
-    onTap: () {
-      Navigator.of(context).pushNamed(ChatAndAudio.routeName);
-    },
+    // onTap: () {
+    //   Navigator.of(context).pushNamed(ChatAndAudio.routeName);
+    // },
     child: Align(
-      alignment: align,
+      alignment: Alignment.topLeft,
       child: Container(
         width: 215,
         margin: EdgeInsets.symmetric(horizontal: 30),
         padding: EdgeInsets.all(15),
         decoration: BoxDecoration(
-          color: color,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Text(

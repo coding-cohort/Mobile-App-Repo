@@ -84,7 +84,7 @@ class _ToolkitState extends State<Toolkit> {
               fit: BoxFit.contain,
             ),
             onPressed: () {
-              Navigator.of(context).pushNamed(SignUpScreen.routeName);
+              Navigator.of(context).pushNamed(LoginScreen.routeName);
             },
           ),
         ),
