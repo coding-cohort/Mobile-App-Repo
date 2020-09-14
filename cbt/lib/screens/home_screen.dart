@@ -1,3 +1,4 @@
+import 'package:cbt/screens/audio_screen.dart';
 import 'package:cbt/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,7 @@ import '../widgets/toolkit.dart';
 import '../screens/pain_data_entry_screen.dart';
 import '../screens/chat_and_audio.dart';
 import 'package:flutter_dialogflow/v2/dialogflow_v2.dart';
-import 'package:bubble/bubble.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 User loggedInUser;
 
@@ -20,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _auth = FirebaseAuth.instance;
   final _controller = TextEditingController();
+
   List<Map> responses = [];
 
   void response(query) async {
@@ -30,10 +32,27 @@ class _HomeScreenState extends State<HomeScreen> {
         Dialogflow(authGoogle: authGoogle, language: Language.english);
     AIResponse aiResponse = await dialogflow.detectIntent(query);
     setState(() {
-      responses.insert(0, {
-        'data': 0,
-        'message': aiResponse.getListMessage()[0]['text']['text'][0].toString()
-      });
+      if (query == 'play audio') {
+        String audiourl = aiResponse
+            .getListMessage()[0]['text']['text'][0]
+            .toString()
+            .substring(
+                0,
+                aiResponse
+                    .getListMessage()[0]['text']['text'][0]
+                    .toString()
+                    .length);
+
+        print(audiourl);
+
+        responses.insert(0, {'data': 2, 'url': audiourl});
+      } else {
+        responses.insert(0, {
+          'data': 0,
+          'message':
+              aiResponse.getListMessage()[0]['text']['text'][0].toString(),
+        });
+      }
     });
   }
 
@@ -116,11 +135,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   reverse: true,
                   itemCount: responses.length,
                   itemBuilder: (context, index) {
-                    return responses[index]['data'] == 0
-                        ? buildBotTextBubble(
-                            responses[index]['message'].toString())
-                        : buildUserTextBubble(
-                            responses[index]['message'].toString());
+                    if (responses[index]['data'] == 0) {
+                      return buildBotTextBubble(
+                          responses[index]['message'].toString());
+                    } else if (responses[index]['data'] == 1) {
+                      return buildUserTextBubble(
+                          responses[index]['message'].toString());
+                    }
+                    return buildAudioTextBubble(
+                        responses[index]['url'].toString(), context);
                   },
                 ),
               ),
@@ -229,6 +252,46 @@ buildBotTextBubble(String content) {
         child: Text(
           content,
           style: kStyleTextBlack,
+        ),
+      ),
+    ),
+  );
+}
+
+buildAudioTextBubble(String content, BuildContext context) {
+  return InkWell(
+    focusColor: kAccentColor,
+    splashColor: kAccentColor,
+    onTap: () {
+      Navigator.push(context, MaterialPageRoute(
+        builder: (context) {
+          return AudioScreen(
+            content: content,
+          );
+        },
+      ));
+    },
+    child: Align(
+      alignment: Alignment.topLeft,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 15),
+        margin: EdgeInsets.all(30),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text('Playing ---'),
+            SizedBox(
+              width: 70,
+            ),
+            IconButton(
+              icon: Image.asset('assets/images/speaker.png'),
+              onPressed: () {},
+            )
+          ],
         ),
       ),
     ),
