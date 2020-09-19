@@ -1,9 +1,15 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 import '../constants.dart';
 
+AudioPlayer audioPlayer = AudioPlayer();
+
 class AudioScreen extends StatelessWidget {
   static const routeName = '/audio-screen';
+  final String content;
+
+  const AudioScreen({this.content});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,6 +46,18 @@ class AudioScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
+          GestureDetector(
+            onTap: () async {
+              await audioPlayer.play(content, isLocal: false);
+            },
+            child: Icon(Icons.play_arrow),
+          ),
+          GestureDetector(
+            onTap: () async {
+              await audioPlayer.pause();
+            },
+            child: Icon(Icons.pause),
+          ),
           Text(
             '-- About CBT -- playing ---',
             style: kStyleTextBlack,
