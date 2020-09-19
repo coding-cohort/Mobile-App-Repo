@@ -31,20 +31,14 @@ class _PainDataEntryScreenState extends State<PainDataEntryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: kPrimaryColor,
-        elevation: 0,
-        title: avatar,
-      ),
       body: Container(
         decoration: BoxDecoration(gradient: kBackgroundGradient),
         child: SafeArea(
           child: Column(
             children: <Widget>[
-              // avatar,
-              SizedBox(height: 30),
+              SizedBox(height: 25),
               buildTextIntro(),
-              SizedBox(height: 70),
+              SizedBox(height: 25),
               Container(
                 decoration: BoxDecoration(
                   border: Border.symmetric(
@@ -54,7 +48,7 @@ class _PainDataEntryScreenState extends State<PainDataEntryScreen> {
                   ),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(35.0),
+                  padding: const EdgeInsets.all(30.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -71,7 +65,7 @@ class _PainDataEntryScreenState extends State<PainDataEntryScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 100),
+              SizedBox(height: 50),
               RaisedButton(
                 shape: kShapeButton,
                 padding: EdgeInsets.all(0),
@@ -100,7 +94,7 @@ class _PainDataEntryScreenState extends State<PainDataEntryScreen> {
     return Text(
       sign,
       style: TextStyle(
-        fontSize: 74,
+        fontSize: 64,
         color: Colors.white,
         fontWeight: FontWeight.w100,
       ),
