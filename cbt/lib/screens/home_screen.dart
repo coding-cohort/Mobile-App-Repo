@@ -7,9 +7,8 @@ import 'package:flutter_dialogflow/dialogflow_v2.dart';
 import '../constants.dart';
 import '../widgets/toolkit.dart';
 import '../screens/pain_data_entry_screen.dart';
-import '../screens/chat_and_audio.dart';
+
 import 'package:flutter_dialogflow/v2/dialogflow_v2.dart';
-import 'package:audioplayers/audioplayers.dart';
 
 User loggedInUser;
 
@@ -58,7 +57,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getCurrentUser();
   }
@@ -66,12 +64,14 @@ class _HomeScreenState extends State<HomeScreen> {
   void getCurrentUser() {
     try {
       final user = _auth.currentUser;
+      // print(user);
       if (user != null) {
         loggedInUser = user;
         print(loggedInUser.email);
+        print(loggedInUser.uid);
       }
     } catch (e) {
-      print(e);
+      print('error $e');
     }
   }
 

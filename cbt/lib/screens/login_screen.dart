@@ -1,12 +1,11 @@
 import 'package:cbt/screens/home_screen.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../constants.dart';
 
-final _firestore = FirebaseFirestore.instance;
 final _auth = FirebaseAuth.instance;
 
 class LoginScreen extends StatefulWidget {
@@ -16,6 +15,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   final _emailFocusNode = FocusNode();
@@ -31,6 +32,32 @@ class _LoginScreenState extends State<LoginScreen> {
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
     super.dispose();
+  }
+
+  Future<String> signInWithGoogle() async {
+    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+    final GoogleSignInAuthentication googleSignInAuthentication =
+        await googleSignInAccount.authentication;
+
+    final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken);
+
+    final UserCredential authResult =
+        await _auth.signInWithCredential(credential);
+    final User user = authResult.user;
+
+    assert(!user.isAnonymous);
+    assert(await user.getIdToken() != null);
+
+    final User currentUser = _auth.currentUser;
+    assert(user.uid == currentUser.uid);
+    return 'signInWithGoogle succeeded: $user';
+  }
+
+  void signOutGoogle() async {
+    await googleSignIn.signOut();
+    print('User sign out');
   }
 
   void _saveForm() async {
@@ -103,6 +130,40 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   buildSignupForm(context),
+                  GestureDetector(
+                    onTap: () {
+                      signInWithGoogle().whenComplete(() {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) {
+                            return HomeScreen();
+                          },
+                        ));
+                      });
+                    },
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0)),
+                      color: Colors.white,
+                      elevation: 1.0,
+                      margin: EdgeInsets.symmetric(horizontal: 70.0),
+                      child: ListTile(
+                        leading: Image(
+                          height: 30.0,
+                          width: 30.0,
+                          image: NetworkImage(
+                            'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1004px-Google_%22G%22_Logo.svg.png',
+                          ),
+                        ),
+                        title: Text(
+                          'Continue with Google',
+                          style: TextStyle(
+                            fontSize: 15.0,
+                            fontFamily: 'Poppins',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
