@@ -150,8 +150,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         leading: Image(
                           height: 30.0,
                           width: 30.0,
-                          image: NetworkImage(
-                            'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1004px-Google_%22G%22_Logo.svg.png',
+                          image: AssetImage(
+                            'assets/images/google_logo.png',
                           ),
                         ),
                         title: Text(
