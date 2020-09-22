@@ -283,7 +283,7 @@ buildAudioTextBubble(String content, BuildContext context) {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Text('Playing ---'),
+            Text('Click to Play Audio'),
             SizedBox(
               width: 70,
             ),

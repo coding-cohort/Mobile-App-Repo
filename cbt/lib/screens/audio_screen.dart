@@ -5,11 +5,28 @@ import '../constants.dart';
 
 AudioPlayer audioPlayer = AudioPlayer();
 
-class AudioScreen extends StatelessWidget {
+class AudioScreen extends StatefulWidget {
   static const routeName = '/audio-screen';
   final String content;
 
   const AudioScreen({this.content});
+
+  @override
+  _AudioScreenState createState() => _AudioScreenState();
+}
+
+class _AudioScreenState extends State<AudioScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    playAudio();
+  }
+
+  Future playAudio() async {
+    return await audioPlayer.play(widget.content, isLocal: false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +65,7 @@ class AudioScreen extends StatelessWidget {
         children: <Widget>[
           GestureDetector(
             onTap: () async {
-              await audioPlayer.play(content, isLocal: false);
+              await audioPlayer.play(widget.content, isLocal: false);
             },
             child: Icon(Icons.play_arrow),
           ),
