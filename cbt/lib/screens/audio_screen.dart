@@ -16,6 +16,7 @@ class AudioScreen extends StatefulWidget {
 }
 
 class _AudioScreenState extends State<AudioScreen> {
+  bool isPlaying = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -63,18 +64,25 @@ class _AudioScreenState extends State<AudioScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          GestureDetector(
-            onTap: () async {
-              await audioPlayer.play(widget.content, isLocal: false);
-            },
-            child: Icon(Icons.play_arrow),
-          ),
-          GestureDetector(
-            onTap: () async {
-              await audioPlayer.pause();
-            },
-            child: Icon(Icons.pause),
-          ),
+          isPlaying
+              ? GestureDetector(
+                  onTap: () async {
+                    setState(() {
+                      isPlaying = !isPlaying;
+                    });
+                    await audioPlayer.play(widget.content, isLocal: false);
+                  },
+                  child: Icon(Icons.play_arrow),
+                )
+              : GestureDetector(
+                  onTap: () async {
+                    setState(() {
+                      isPlaying = !isPlaying;
+                    });
+                    await audioPlayer.pause();
+                  },
+                  child: Icon(Icons.pause),
+                ),
           Text(
             '-- About CBT -- playing ---',
             style: kStyleTextBlack,
