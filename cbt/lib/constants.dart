@@ -103,3 +103,17 @@ Widget avatar = Container(
   margin: const EdgeInsets.all(18),
   child: Image.asset('assets/images/female_1.png'),
 );
+
+Widget avatarIcon = CircleAvatar(
+  backgroundImage: AssetImage('assets/images/female_1.png'),
+  backgroundColor: Colors.white,
+  radius: 30.0,
+);
+
+const kLandingPageTextstyle =
+    TextStyle(fontSize: 30.0, fontStyle: FontStyle.italic, color: Colors.white);
+
+const kBubbleTextStyle =
+    TextStyle(fontStyle: FontStyle.italic, color: Colors.white, fontSize: 20.0);
+
+const kLandingPageTitleTextStyle = TextStyle(fontSize: 50.0,color: Colors.white,letterSpacing: 2.0);

@@ -13,6 +13,7 @@ import 'package:flutter_dialogflow/v2/dialogflow_v2.dart';
 User loggedInUser;
 
 class HomeScreen extends StatefulWidget {
+  static const routeName = '/home-screen';
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
