@@ -1,7 +1,9 @@
 import 'package:cbt/screens/audio_screen.dart';
 import 'package:cbt/screens/login_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
 
 import '../constants.dart';
@@ -14,6 +16,7 @@ User loggedInUser;
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home-screen';
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -21,6 +24,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _auth = FirebaseAuth.instance;
   final _controller = TextEditingController();
+  String userName;
+  var userData;
 
   List<Map> responses = [];
 
@@ -62,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
     getCurrentUser();
   }
 
-  void getCurrentUser() {
+  void getCurrentUser() async {
     try {
       final user = _auth.currentUser;
       // print(user);
@@ -70,6 +75,18 @@ class _HomeScreenState extends State<HomeScreen> {
         loggedInUser = user;
         print(loggedInUser.email);
         print(loggedInUser.uid);
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get()
+            .then((DocumentSnapshot documentSnapshot) {
+          if (documentSnapshot.exists) {
+            userData = documentSnapshot.data();
+            setState(() {
+              userName = userData['name'].toString().toUpperCase();
+            });
+          }
+        });
       }
     } catch (e) {
       print('error $e');
@@ -105,31 +122,70 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
         backgroundColor: kPrimaryColor,
         elevation: 0,
-        leading: IconButton(
-            icon: Icon(Icons.exit_to_app),
-            onPressed: () {
-              _auth.signOut();
-              Navigator.popUntil(
-                  context, ModalRoute.withName(LoginScreen.routeName));
-            }),
+      ),
+      drawer: Drawer(
+        elevation: 5.0,
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            Container(
+              color: Colors.white,
+              child: DrawerHeader(
+                child: Column(
+                  children: [
+                    Center(
+                      child: Text(
+                        'Debbie',
+                        style: TextStyle(fontSize: 30.0),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 40.0,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text('Welcome, $userName',style: TextStyle(fontSize: 20.0),),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text(
+                'Settings',
+              ),
+              onTap: () {
+                // Navigator.of(context).push();
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.exit_to_app),
+              title: Text(
+                'Sign Out',
+              ),
+              onTap: () {
+                _auth.signOut();
+                SchedulerBinding.instance.addPostFrameCallback((_) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoginScreen(),
+                    ),
+                  );
+                });
+              },
+            )
+          ],
+        ),
       ),
       body: SafeArea(
         child: Container(
           decoration: BoxDecoration(gradient: kBackgroundGradient),
           child: Column(
-            // mainAxisSize: MainAxisSize.min,
-            // mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              // avatar,
-              // SizedBox(height: 30),
-              // buildBotTextBubble(
-              //   'data datadata data data data data datadata data data data data datadata data data data data datadata data data data',
-              //   Colors.white,
-              //   Alignment.topLeft,
-              // ),
-              // buildUserTextBubble(),
-              // buildAudioTextBubble(context),
-
               Flexible(
                 child: ListView.builder(
                   // shrinkWrap: true,

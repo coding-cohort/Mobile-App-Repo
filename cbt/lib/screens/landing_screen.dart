@@ -1,5 +1,10 @@
 import 'package:cbt/constants.dart';
+import 'package:cbt/screens/home_screen.dart';
+import 'package:cbt/screens/login_screen.dart';
+import 'package:cbt/screens/signup_Screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 class LandingScreen extends StatefulWidget {
   @override
@@ -7,6 +12,30 @@ class LandingScreen extends StatefulWidget {
 }
 
 class _LandingScreenState extends State<LandingScreen> {
+  final _auth = FirebaseAuth.instance;
+  User loggedInUser;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    isUserLoggedIn();
+  }
+
+  void isUserLoggedIn() {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        loggedInUser = user;
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          Navigator.of(context).pushNamed(HomeScreen.routeName);
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,8 +57,13 @@ class _LandingScreenState extends State<LandingScreen> {
                 style: kLandingPageTextstyle,
               ),
               LandingPageCircle(),
-              SizedBox(height: 40.0,),
-              Text('Debbie',style: kLandingPageTitleTextStyle,),
+              SizedBox(
+                height: 40.0,
+              ),
+              Text(
+                'Debbie',
+                style: kLandingPageTitleTextStyle,
+              ),
             ],
           ),
         ),
@@ -52,30 +86,35 @@ class LandingPageCircle extends StatelessWidget {
         color: Color(0x50D8DCE1),
         border: Border.all(color: Colors.white, width: 2.0),
       ),
-      child: Container(
-        height: 50.0,
-        width: 50.0,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Color(0x50D8DCE1),
-          border: Border.all(color: Colors.white, width: 2.0),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Center(
-              child: Text(
-                'Join us',
-                style: kBubbleTextStyle,
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of(context).pushNamed(SignUpScreen.routeName);
+        },
+        child: Container(
+          height: 50.0,
+          width: 50.0,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Color(0x50D8DCE1),
+            border: Border.all(color: Colors.white, width: 2.0),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                child: Text(
+                  'Join us',
+                  style: kBubbleTextStyle,
+                ),
               ),
-            ),
-            Center(
-              child: Text(
-                'now',
-                style: kBubbleTextStyle,
+              Center(
+                child: Text(
+                  'now',
+                  style: kBubbleTextStyle,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

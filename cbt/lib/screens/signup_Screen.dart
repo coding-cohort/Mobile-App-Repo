@@ -1,4 +1,5 @@
 import 'package:cbt/screens/home_screen.dart';
+import 'package:cbt/screens/login_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +49,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         .createUserWithEmailAndPassword(
             email: emailController.text, password: passwordController.text)
         .then((result) {
-      _firestore.collection('users').add({
+      _firestore.collection('users').doc(result.user.uid).set({
         "name": nameController.text,
         "surname": surnameController.text,
         "email": emailController.text,
@@ -119,6 +120,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                   buildSignupForm(context),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Already have an account?',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      FlatButton(
+                        onPressed: () {
+                          Navigator.of(context)
+                              .pushNamed(LoginScreen.routeName);
+                        },
+                        child: Container(
+                          width: 100,
+                          alignment: Alignment.center,
+                          decoration: kButtonDecoration,
+                          padding: const EdgeInsets.all(7.0),
+                          child: Text(
+                            'Login',
+                            style: kStyleButton,
+                          ),
+                        ),
+                      )
+                    ],
+                  )
                 ],
               ),
             ),
