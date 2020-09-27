@@ -1,4 +1,5 @@
 import 'package:cbt/screens/home_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -7,6 +8,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../constants.dart';
 
 final _auth = FirebaseAuth.instance;
+final _firestore = FirebaseFirestore.instance;
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login-screen';
@@ -46,12 +48,25 @@ class _LoginScreenState extends State<LoginScreen> {
     final UserCredential authResult =
         await _auth.signInWithCredential(credential);
     final User user = authResult.user;
+    print(user.displayName);
 
     assert(!user.isAnonymous);
     assert(await user.getIdToken() != null);
 
     final User currentUser = _auth.currentUser;
     assert(user.uid == currentUser.uid);
+    var a = _firestore.collection('users').doc(user.uid);
+    if (a.id.isEmpty) {
+      _firestore.collection('users').doc(user.uid).set({
+        "name": user.displayName.substring(0, user.displayName.indexOf(' ')),
+        "surname": user.displayName.substring(
+            user.displayName.indexOf(' ') + 1, user.displayName.length),
+        "email": user.email,
+      });
+      print('db executed');
+    }
+    print('db not executed');
+
     return 'signInWithGoogle succeeded: $user';
   }
 
