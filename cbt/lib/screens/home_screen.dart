@@ -145,7 +145,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text('Welcome, $userName',style: TextStyle(fontSize: 20.0),),
+                        Text(
+                          'Welcome, $userName',
+                          style: TextStyle(fontSize: 20.0),
+                        ),
                       ],
                     ),
                   ],
@@ -213,6 +216,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Flexible(
                       child: TextField(
+                        autofocus: false,
                         controller: _controller,
                         decoration: InputDecoration.collapsed(
                             hintText: 'Send your message'),

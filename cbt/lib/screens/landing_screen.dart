@@ -28,7 +28,7 @@ class _LandingScreenState extends State<LandingScreen> {
       if (user != null) {
         loggedInUser = user;
         SchedulerBinding.instance.addPostFrameCallback((_) {
-          Navigator.of(context).pushNamed(HomeScreen.routeName);
+          Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
         });
       }
     } catch (e) {
