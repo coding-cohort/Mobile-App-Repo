@@ -103,6 +103,20 @@ Widget avatar = Container(
   margin: const EdgeInsets.all(18),
   child: Image.asset('assets/images/female_1.png'),
 );
+Widget crossButton = Container(
+  // padding: EdgeInsets.all(20.0),
+  decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      color: Color(0x20ffffff),
+      border: Border.all(color: Colors.white)),
+  height: 50,
+  width: 50,
+  // margin: const EdgeInsets.all(18),
+  child: Icon(
+    Icons.close,
+    size: 40.0,
+  ),
+);
 
 Widget avatarIcon = CircleAvatar(
   backgroundImage: AssetImage('assets/images/female_1.png'),
@@ -116,4 +130,5 @@ const kLandingPageTextstyle =
 const kBubbleTextStyle =
     TextStyle(fontStyle: FontStyle.italic, color: Colors.white, fontSize: 20.0);
 
-const kLandingPageTitleTextStyle = TextStyle(fontSize: 50.0,color: Colors.white,letterSpacing: 2.0);
+const kLandingPageTitleTextStyle =
+    TextStyle(fontSize: 50.0, color: Colors.white, letterSpacing: 2.0);
