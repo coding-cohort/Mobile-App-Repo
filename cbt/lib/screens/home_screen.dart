@@ -1,9 +1,11 @@
 import 'package:cbt/screens/audio_screen.dart';
+import 'package:cbt/screens/landing_screen.dart';
 import 'package:cbt/screens/login_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
 
 import '../constants.dart';
@@ -116,160 +118,164 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: avatar,
-        centerTitle: true,
-        backgroundColor: kPrimaryColor,
-        elevation: 0,
-      ),
-      drawer: Drawer(
-        elevation: 5.0,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            Container(
-              color: Colors.white,
-              child: DrawerHeader(
-                child: Column(
-                  children: [
-                    Center(
-                      child: Text(
-                        'Debbie',
-                        style: TextStyle(fontSize: 30.0),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 40.0,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Welcome, $userName',
-                          style: TextStyle(fontSize: 20.0),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.settings),
-              title: Text(
-                'Settings',
-              ),
-              onTap: () {
-                // Navigator.of(context).push();
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.exit_to_app),
-              title: Text(
-                'Sign Out',
-              ),
-              onTap: () {
-                _auth.signOut();
-                SchedulerBinding.instance.addPostFrameCallback((_) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => LoginScreen(),
-                    ),
-                  );
-                });
-              },
-            )
-          ],
+    return WillPopScope(
+      onWillPop: () =>
+          SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
+      child: Scaffold(
+        appBar: AppBar(
+          title: avatar,
+          centerTitle: true,
+          backgroundColor: kPrimaryColor,
+          elevation: 0,
         ),
-      ),
-      body: SafeArea(
-        child: Container(
-          decoration: BoxDecoration(gradient: kBackgroundGradient),
-          child: Column(
-            children: <Widget>[
-              Flexible(
-                child: ListView.builder(
-                  // shrinkWrap: true,
-                  reverse: true,
-                  itemCount: responses.length,
-                  itemBuilder: (context, index) {
-                    if (responses[index]['data'] == 0) {
-                      return buildBotTextBubble(
-                          responses[index]['message'].toString());
-                    } else if (responses[index]['data'] == 1) {
-                      return buildUserTextBubble(
-                          responses[index]['message'].toString());
-                    }
-                    return buildAudioTextBubble(
-                        responses[index]['url'].toString(), context);
-                  },
-                ),
-              ),
-              Divider(
-                height: 3.0,
-              ),
+        drawer: Drawer(
+          elevation: 5.0,
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                child: Row(
-                  children: [
-                    Flexible(
-                      child: TextField(
-                        autofocus: false,
-                        controller: _controller,
-                        decoration: InputDecoration.collapsed(
-                            hintText: 'Send your message'),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 4.0),
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.send,
-                          color: Colors.white,
+                color: Colors.white,
+                child: DrawerHeader(
+                  child: Column(
+                    children: [
+                      Center(
+                        child: Text(
+                          'Debbie',
+                          style: TextStyle(fontSize: 30.0),
                         ),
-                        onPressed: () {
-                          if (_controller.text.isEmpty) {
-                            print('empty');
-                          } else {
-                            setState(() {
-                              responses.insert(
-                                  0, {'data': 1, 'message': _controller.text});
-                            });
-                            response(_controller.text);
-                            _controller.clear();
-                          }
-                        },
                       ),
-                    )
-                  ],
+                      SizedBox(
+                        height: 40.0,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Welcome, $userName',
+                            style: TextStyle(fontSize: 20.0),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
+              ),
+              ListTile(
+                leading: Icon(Icons.settings),
+                title: Text(
+                  'Settings',
+                ),
+                onTap: () {
+                  // Navigator.of(context).push();
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.exit_to_app),
+                title: Text(
+                  'Sign Out',
+                ),
+                onTap: () {
+                  _auth.signOut();
+                  SchedulerBinding.instance.addPostFrameCallback((_) {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LandingScreen(),
+                      ),
+                    );
+                  });
+                },
               )
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: kAccentColor,
-        elevation: 0,
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            title: Text(''),
+        body: SafeArea(
+          child: Container(
+            decoration: BoxDecoration(gradient: kBackgroundGradient),
+            child: Column(
+              children: <Widget>[
+                Flexible(
+                  child: ListView.builder(
+                    // shrinkWrap: true,
+                    reverse: true,
+                    itemCount: responses.length,
+                    itemBuilder: (context, index) {
+                      if (responses[index]['data'] == 0) {
+                        return buildBotTextBubble(
+                            responses[index]['message'].toString());
+                      } else if (responses[index]['data'] == 1) {
+                        return buildUserTextBubble(
+                            responses[index]['message'].toString());
+                      }
+                      return buildAudioTextBubble(
+                          responses[index]['url'].toString(), context);
+                    },
+                  ),
+                ),
+                Divider(
+                  height: 3.0,
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: TextField(
+                          autofocus: false,
+                          controller: _controller,
+                          decoration: InputDecoration.collapsed(
+                              hintText: 'Send your message'),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: 4.0),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.send,
+                            color: Colors.white,
+                          ),
+                          onPressed: () {
+                            if (_controller.text.isEmpty) {
+                              print('empty');
+                            } else {
+                              setState(() {
+                                responses.insert(0,
+                                    {'data': 1, 'message': _controller.text});
+                              });
+                              response(_controller.text);
+                              _controller.clear();
+                            }
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            title: Text(''),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.pan_tool),
-            title: Text(''),
-          ),
-        ],
-        onTap: (_selectedIndex) {
-          bottomNavAction(context, _selectedIndex);
-        },
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: kAccentColor,
+          elevation: 0,
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              title: Text(''),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.add),
+              title: Text(''),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.pan_tool),
+              title: Text(''),
+            ),
+          ],
+          onTap: (_selectedIndex) {
+            bottomNavAction(context, _selectedIndex);
+          },
+        ),
       ),
     );
   }
