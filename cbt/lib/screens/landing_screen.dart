@@ -73,7 +73,7 @@ class _LandingScreenState extends State<LandingScreen> {
 }
 
 class LandingPageCircle extends StatelessWidget {
-  const LandingPageCircle();
+  const LandingPageCircle({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +91,7 @@ class LandingPageCircle extends StatelessWidget {
           Navigator.of(context).pushNamed(SignUpScreen.routeName);
         },
         child: Container(
+          key: Key('buttonContainer'),
           height: 50.0,
           width: 50.0,
           decoration: BoxDecoration(
@@ -105,6 +106,7 @@ class LandingPageCircle extends StatelessWidget {
                 child: Text(
                   'Join us',
                   style: kBubbleTextStyle,
+                  key: Key('text'),
                 ),
               ),
               Center(
