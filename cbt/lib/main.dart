@@ -42,6 +42,7 @@ class MyApp extends StatelessWidget {
         LoginScreen.routeName: (ctx) => LoginScreen(),
         GoalEntryScreen1.routeName: (ctx) => GoalEntryScreen1(),
         GoalEntryScreen2.routeName: (ctx) => GoalEntryScreen2(),
+        LandingScreen.routeName: (ctx) => LandingScreen(),
       },
     );
   }

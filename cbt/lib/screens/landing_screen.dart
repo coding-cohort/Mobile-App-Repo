@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 class LandingScreen extends StatefulWidget {
+  static const routeName = '/landing-screen';
   @override
   _LandingScreenState createState() => _LandingScreenState();
 }

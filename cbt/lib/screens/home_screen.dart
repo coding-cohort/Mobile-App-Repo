@@ -175,14 +175,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   'Sign Out',
                 ),
                 onTap: () {
-                  _auth.signOut();
+                  _auth.signOut(); 
                   SchedulerBinding.instance.addPostFrameCallback((_) {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LandingScreen(),
-                      ),
-                    );
+
+                    //this will remove all the route stacks and make the landing page the root.
+                    Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        LandingScreen.routeName,
+                        (Route<dynamic> route) => false);
                   });
                 },
               )
