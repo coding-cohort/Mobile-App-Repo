@@ -1,5 +1,8 @@
 import 'package:cbt/constants.dart';
+import 'package:cbt/screens/goal_entry/goal_entry_screen1.dart';
+import 'package:cbt/screens/goal_entry/goal_entry_screen2.dart';
 import 'package:cbt/screens/login_screen.dart';
+import 'package:cbt/screens/update_account_screen.dart';
 import 'package:flutter/material.dart';
 
 class Toolkit extends StatefulWidget {
@@ -38,14 +41,24 @@ class _ToolkitState extends State<Toolkit> {
               buildToolkitItem(
                 'assets/images/person.png',
                 'Account',
+                () {
+                  Navigator.of(context)
+                      .pushNamed(UpdateAccountScreen.routeName);
+                },
               ),
               buildToolkitItem(
                 'assets/images/tv.png',
                 'Pain reports',
+                () {
+                  Navigator.of(context).pushNamed(GoalEntryScreen1.routeName);
+                },
               ),
               buildToolkitItem(
                 'assets/images/walking_person.png',
                 'Exercise',
+                () {
+                  Navigator.of(context).pushNamed(GoalEntryScreen1.routeName);
+                },
               ),
             ],
           ),
@@ -57,11 +70,17 @@ class _ToolkitState extends State<Toolkit> {
               buildToolkitItem(
                 'assets/images/dart.png',
                 'Goals',
+                () {
+                  Navigator.of(context).pushNamed(GoalEntryScreen1.routeName);
+                },
               ),
               SizedBox(width: 50),
               buildToolkitItem(
                 'assets/images/emoji.png',
                 'Meditation',
+                () {
+                  Navigator.of(context).pushNamed(GoalEntryScreen2.routeName);
+                },
               ),
             ],
           ),
@@ -70,21 +89,18 @@ class _ToolkitState extends State<Toolkit> {
     );
   }
 
-  Column buildToolkitItem(String iconURL, String title) {
+  Column buildToolkitItem(String iconURL, String title, Function route) {
     return Column(
       children: <Widget>[
         Container(
           width: 55,
           height: 55,
           child: IconButton(
-            icon: Image.asset(
-              iconURL,
-              fit: BoxFit.contain,
-            ),
-            onPressed: () {
-              Navigator.of(context).pushNamed(LoginScreen.routeName);
-            },
-          ),
+              icon: Image.asset(
+                iconURL,
+                fit: BoxFit.contain,
+              ),
+              onPressed: route),
         ),
         Text(title),
       ],

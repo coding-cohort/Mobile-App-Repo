@@ -109,6 +109,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       child: Text(
                         'Managing pain can be tough.\n\n Get help from Debbie - sign up now!',
+                        key: Key('signUpText'),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 class LandingScreen extends StatefulWidget {
+  static const routeName = '/landing-screen';
   @override
   _LandingScreenState createState() => _LandingScreenState();
 }
@@ -28,7 +29,7 @@ class _LandingScreenState extends State<LandingScreen> {
       if (user != null) {
         loggedInUser = user;
         SchedulerBinding.instance.addPostFrameCallback((_) {
-          Navigator.of(context).pushNamed(HomeScreen.routeName);
+          Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
         });
       }
     } catch (e) {
@@ -73,7 +74,7 @@ class _LandingScreenState extends State<LandingScreen> {
 }
 
 class LandingPageCircle extends StatelessWidget {
-  const LandingPageCircle();
+  const LandingPageCircle({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +92,7 @@ class LandingPageCircle extends StatelessWidget {
           Navigator.of(context).pushNamed(SignUpScreen.routeName);
         },
         child: Container(
+          key: Key('buttonContainer'),
           height: 50.0,
           width: 50.0,
           decoration: BoxDecoration(
@@ -105,6 +107,7 @@ class LandingPageCircle extends StatelessWidget {
                 child: Text(
                   'Join us',
                   style: kBubbleTextStyle,
+                  key: Key('text'),
                 ),
               ),
               Center(

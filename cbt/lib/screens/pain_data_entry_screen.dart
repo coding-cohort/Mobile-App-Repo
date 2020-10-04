@@ -10,10 +10,10 @@ class PainDataEntryScreen extends StatefulWidget {
 }
 
 class _PainDataEntryScreenState extends State<PainDataEntryScreen> {
-  int _counter = 0;
+  int _counter = 1;
 
   void _incrementCounter() {
-    if (_counter < 5) {
+    if (_counter < 10) {
       setState(() {
         _counter++;
       });
@@ -21,7 +21,7 @@ class _PainDataEntryScreenState extends State<PainDataEntryScreen> {
   }
 
   void _decrementCounter() {
-    if (_counter > 0) {
+    if (_counter > 1) {
       setState(() {
         _counter--;
       });
@@ -31,10 +31,19 @@ class _PainDataEntryScreenState extends State<PainDataEntryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+     appBar: AppBar(
+        title: avatar,
+        centerTitle: true,
         backgroundColor: kPrimaryColor,
         elevation: 0,
-        title: avatar,
+        automaticallyImplyLeading: false,
+        actions: <Widget>[
+          GestureDetector(
+              onTap: () => Navigator.of(context).pop(), child: crossButton),
+          SizedBox(
+            width: 20.0,
+          )
+        ],
       ),
       body: Container(
         decoration: BoxDecoration(gradient: kBackgroundGradient),
@@ -117,11 +126,15 @@ class _PainDataEntryScreenState extends State<PainDataEntryScreen> {
           borderRadius: BorderRadius.circular(10),
         ),
         child: Text(
-          'data datadata data data dataa datadata data data data jdkj dklfh kdhf\ndata datadata data data data data datadata data data data',
+          'To record your pain level, enter a number between 1 and 10. 1 being the lowest and 10 being the highest',
           style: TextStyle(
             color: Colors.white,
+            fontSize: 19.0,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.5,
+            wordSpacing: 1.5,
           ),
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.center
         ),
       ),
     );
