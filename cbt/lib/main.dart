@@ -1,5 +1,6 @@
 import 'package:cbt/screens/goal_entry/goal_entry_screen1.dart';
 import 'package:cbt/screens/goal_entry/goal_entry_screen2.dart';
+import 'package:cbt/screens/goal_entry/goal_entry_screen3.dart';
 import 'package:cbt/screens/landing_screen.dart';
 import 'package:cbt/screens/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
         LoginScreen.routeName: (ctx) => LoginScreen(),
         GoalEntryScreen1.routeName: (ctx) => GoalEntryScreen1(),
         GoalEntryScreen2.routeName: (ctx) => GoalEntryScreen2(),
+        GoalEntryScreen3.routeName: (ctx) => GoalEntryScreen3(),
         LandingScreen.routeName: (ctx) => LandingScreen(),
       },
     );

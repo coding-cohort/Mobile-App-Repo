@@ -1,6 +1,7 @@
 import 'package:cbt/constants.dart';
 import 'package:cbt/screens/goal_entry/goal_entry_screen1.dart';
 import 'package:cbt/screens/goal_entry/goal_entry_screen2.dart';
+import 'package:cbt/screens/goal_entry/goal_entry_screen3.dart';
 import 'package:cbt/screens/login_screen.dart';
 import 'package:cbt/screens/update_account_screen.dart';
 import 'package:flutter/material.dart';
@@ -79,7 +80,7 @@ class _ToolkitState extends State<Toolkit> {
                 'assets/images/emoji.png',
                 'Meditation',
                 () {
-                  Navigator.of(context).pushNamed(GoalEntryScreen2.routeName);
+                  Navigator.of(context).pushNamed(GoalEntryScreen3.routeName);
                 },
               ),
             ],

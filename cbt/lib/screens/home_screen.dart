@@ -1,6 +1,5 @@
 import 'package:cbt/screens/audio_screen.dart';
 import 'package:cbt/screens/landing_screen.dart';
-import 'package:cbt/screens/login_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +12,7 @@ import '../widgets/toolkit.dart';
 import '../screens/pain_data_entry_screen.dart';
 
 import 'package:flutter_dialogflow/v2/dialogflow_v2.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 User loggedInUser;
 
@@ -175,9 +175,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   'Sign Out',
                 ),
                 onTap: () {
-                  _auth.signOut(); 
+                  _auth.signOut();
                   SchedulerBinding.instance.addPostFrameCallback((_) {
-
                     //this will remove all the route stacks and make the landing page the root.
                     Navigator.pushNamedAndRemoveUntil(
                         context,
@@ -262,13 +261,14 @@ class _HomeScreenState extends State<HomeScreen> {
             BottomNavigationBarItem(
               icon: Icon(Icons.settings),
               title: Text(''),
+              backgroundColor: Color(0x20000000)
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.add),
               title: Text(''),
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.pan_tool),
+              icon: Icon(FontAwesomeIcons.leaf),
               title: Text(''),
             ),
           ],
