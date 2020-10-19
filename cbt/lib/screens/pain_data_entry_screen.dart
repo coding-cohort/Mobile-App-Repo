@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../constants.dart';
@@ -10,13 +12,17 @@ class PainDataEntryScreen extends StatefulWidget {
 }
 
 class _PainDataEntryScreenState extends State<PainDataEntryScreen> {
+  final _firestore = FirebaseFirestore.instance;
+  final _auth = FirebaseAuth.instance;
   int _counter = 1;
+  var data;
 
   void _incrementCounter() {
     if (_counter < 10) {
       setState(() {
         _counter++;
       });
+      print(_counter);
     }
   }
 
@@ -25,13 +31,24 @@ class _PainDataEntryScreenState extends State<PainDataEntryScreen> {
       setState(() {
         _counter--;
       });
+      print(_counter);
+    }
+  }
+
+  Future<bool> checkIfDocExists(id) async {
+    try {
+      var collectionRef = _firestore.collection('pain');
+      var doc = await collectionRef.doc(id).get();
+      return doc.exists;
+    } catch (e) {
+      throw e;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     appBar: AppBar(
+      appBar: AppBar(
         title: avatar,
         centerTitle: true,
         backgroundColor: kPrimaryColor,
@@ -84,8 +101,74 @@ class _PainDataEntryScreenState extends State<PainDataEntryScreen> {
               RaisedButton(
                 shape: kShapeButton,
                 padding: EdgeInsets.all(0),
-                onPressed: () {
-                  Navigator.pop(context);
+                onPressed: () async {
+                  bool docExists =
+                      await checkIfDocExists(_auth.currentUser.uid);
+                  if (docExists) {
+                    _firestore
+                        .collection('pain')
+                        .doc(_auth.currentUser.uid)
+                        .get()
+                        .then((value) {
+                      if (value.exists) {
+                        data = value.data();
+                        print(data);
+                        String dbTime = data['messageTime'];
+                        String time1 = dbTime.substring(0, dbTime.indexOf('T'));
+                        var currentdate = DateTime.now().toIso8601String();
+                        String current1 =
+                            currentdate.substring(0, currentdate.indexOf('T'));
+                        if (current1 == time1) {
+                          print('same day, cannot add entry');
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text("Error"),
+                                  content:
+                                      Text('You can save only once per day'),
+                                  actions: [
+                                    FlatButton(
+                                      child: Text("Ok"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    )
+                                  ],
+                                );
+                              });
+                        } else {
+                          print('different day can add entry');
+                          _firestore.collection('pain').add({
+                            'pain_level': _counter,
+                            'messageTime': DateTime.now().toIso8601String(),
+                            'email': _auth.currentUser.email,
+                          });
+                          Navigator.pop(context);
+                          print('pain value saved in db');
+                        }
+
+                        print(time1);
+                      } else {
+                        print('no such document');
+                      }
+                    }).catchError((error) {
+                      print('error getting document: $error');
+                    });
+
+                    // var time1 = time.substring(0, time.indexOf('T'));
+                    // print(time);
+                    // print(data);
+
+                  } else {
+                    _firestore.collection('pain').add({
+                      'pain_level': _counter,
+                      'messageTime': DateTime.now().toIso8601String(),
+                      'email': _auth.currentUser.email,
+                    });
+                    Navigator.pop(context);
+                    print('pain value saved in db');
+                  }
                 },
                 child: Container(
                   width: 100,
@@ -126,16 +209,15 @@ class _PainDataEntryScreenState extends State<PainDataEntryScreen> {
           borderRadius: BorderRadius.circular(10),
         ),
         child: Text(
-          'To record your pain level, enter a number between 1 and 10. 1 being the lowest and 10 being the highest',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 19.0,
-            fontWeight: FontWeight.w500,
-            letterSpacing: 0.5,
-            wordSpacing: 1.5,
-          ),
-          textAlign: TextAlign.center
-        ),
+            'To record your pain level, enter a number between 1 and 10. 1 being the lowest and 10 being the highest',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 19.0,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 0.5,
+              wordSpacing: 1.5,
+            ),
+            textAlign: TextAlign.center),
       ),
     );
   }

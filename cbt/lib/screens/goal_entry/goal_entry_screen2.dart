@@ -1,6 +1,9 @@
 import 'package:cbt/constants.dart';
+import 'package:cbt/screens/pain_data_entry_screen.dart';
+import 'package:cbt/widgets/toolkit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class GoalEntryScreen2 extends StatefulWidget {
   static const routeName = '/goal-entry-screen2';
@@ -11,9 +14,31 @@ class GoalEntryScreen2 extends StatefulWidget {
 class _GoalEntryScreen2State extends State<GoalEntryScreen2> {
   var selectedItems;
   List<Widget> pickerItems;
+
+  int _selectedIndex = 0;
+  void bottomNavAction(BuildContext ctx, int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    if (_selectedIndex == 0) {
+      showModalBottomSheet(
+        context: ctx,
+        builder: (_) {
+          return Toolkit();
+        },
+      );
+    }
+    if (_selectedIndex == 1) {
+      print(_selectedIndex);
+      Navigator.of(context).pushNamed(PainDataEntryScreen.routeName);
+    }
+    if (_selectedIndex == 2) {}
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: buildBottomNavigationBar(context),
       appBar: AppBar(
         title: avatar,
         centerTitle: true,
@@ -82,6 +107,30 @@ class _GoalEntryScreen2State extends State<GoalEntryScreen2> {
           ),
         ),
       ),
+    );
+  }
+
+  BottomNavigationBar buildBottomNavigationBar(BuildContext context) {
+    return BottomNavigationBar(
+      backgroundColor: kAccentColor,
+      elevation: 0,
+      items: <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            title: Text('Toolkit'),
+            backgroundColor: Color(0x20000000)),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.add),
+          title: Text('Track'),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(FontAwesomeIcons.leaf),
+          title: Text('Calm'),
+        ),
+      ],
+      onTap: (_selectedIndex) {
+        bottomNavAction(context, _selectedIndex);
+      },
     );
   }
 

@@ -37,27 +37,7 @@ class _GoalEntryScreen3State extends State<GoalEntryScreen3> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: kAccentColor,
-        elevation: 0,
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              title: Text(''),
-              backgroundColor: Color(0x20000000)),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            title: Text(''),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.leaf),
-            title: Text(''),
-          ),
-        ],
-        onTap: (_selectedIndex) {
-          bottomNavAction(context, _selectedIndex);
-        },
-      ),
+      bottomNavigationBar: buildBottomNavigationBar(context),
       appBar: AppBar(
         title: avatar,
         centerTitle: true,
@@ -126,6 +106,48 @@ class _GoalEntryScreen3State extends State<GoalEntryScreen3> {
           ),
         ),
       ),
+    );
+  }
+
+  BottomNavigationBar buildBottomNavigationBar(BuildContext context) {
+    return BottomNavigationBar(
+      backgroundColor: kAccentColor,
+      elevation: 0,
+      items: <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.settings,
+            color: Color(0x90000000),
+          ),
+          title: Text(
+            'Toolkit',
+            style: TextStyle(
+              color: Color(0x90000000),
+            ),
+          ),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.add),
+          title: Text(
+            'Track',
+            style: TextStyle(
+              color: Color(0x90000000),
+            ),
+          ),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(FontAwesomeIcons.leaf),
+          title: Text(
+            'Calm',
+            style: TextStyle(
+              color: Color(0x90000000),
+            ),
+          ),
+        ),
+      ],
+      onTap: (_selectedIndex) {
+        bottomNavAction(context, _selectedIndex);
+      },
     );
   }
 
