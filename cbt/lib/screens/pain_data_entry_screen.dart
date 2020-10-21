@@ -37,7 +37,10 @@ class _PainDataEntryScreenState extends State<PainDataEntryScreen> {
 
   Future<bool> checkIfDocExists(id) async {
     try {
-      var collectionRef = _firestore.collection('pain');
+      var collectionRef = _firestore
+          .collection('pain')
+          .doc(_auth.currentUser.uid)
+          .collection('userpain');
       var doc = await collectionRef.doc(id).get();
       return doc.exists;
     } catch (e) {
@@ -102,66 +105,38 @@ class _PainDataEntryScreenState extends State<PainDataEntryScreen> {
                 shape: kShapeButton,
                 padding: EdgeInsets.all(0),
                 onPressed: () async {
-                  bool docExists =
-                      await checkIfDocExists(_auth.currentUser.uid);
+                  var currentdate = DateTime.now().toIso8601String();
+                  String current1 =
+                      currentdate.substring(0, currentdate.indexOf('T'));
+                  bool docExists = await checkIfDocExists(
+                      current1); // here it will send the date as the id
                   if (docExists) {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Error"),
+                            content: Text('You can save only once per day'),
+                            actions: [
+                              FlatButton(
+                                child: Text("Ok"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              )
+                            ],
+                          );
+                        });
+                  } else {
+                    var currentdate = DateTime.now().toIso8601String();
+                    String current1 =
+                        currentdate.substring(0, currentdate.indexOf('T'));
                     _firestore
                         .collection('pain')
                         .doc(_auth.currentUser.uid)
-                        .get()
-                        .then((value) {
-                      if (value.exists) {
-                        data = value.data();
-                        print(data);
-                        String dbTime = data['messageTime'];
-                        String time1 = dbTime.substring(0, dbTime.indexOf('T'));
-                        var currentdate = DateTime.now().toIso8601String();
-                        String current1 =
-                            currentdate.substring(0, currentdate.indexOf('T'));
-                        if (current1 == time1) {
-                          print('same day, cannot add entry');
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text("Error"),
-                                  content:
-                                      Text('You can save only once per day'),
-                                  actions: [
-                                    FlatButton(
-                                      child: Text("Ok"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    )
-                                  ],
-                                );
-                              });
-                        } else {
-                          print('different day can add entry');
-                          _firestore.collection('pain').add({
-                            'pain_level': _counter,
-                            'messageTime': DateTime.now().toIso8601String(),
-                            'email': _auth.currentUser.email,
-                          });
-                          Navigator.pop(context);
-                          print('pain value saved in db');
-                        }
-
-                        print(time1);
-                      } else {
-                        print('no such document');
-                      }
-                    }).catchError((error) {
-                      print('error getting document: $error');
-                    });
-
-                    // var time1 = time.substring(0, time.indexOf('T'));
-                    // print(time);
-                    // print(data);
-
-                  } else {
-                    _firestore.collection('pain').add({
+                        .collection('userpain')
+                        .doc(current1)
+                        .set({
                       'pain_level': _counter,
                       'messageTime': DateTime.now().toIso8601String(),
                       'email': _auth.currentUser.email,
