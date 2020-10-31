@@ -1,15 +1,18 @@
+import 'dart:async';
+
+import 'package:cbt/models/users.dart';
 import 'package:cbt/screens/home_screen.dart';
 import 'package:cbt/screens/login_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 import '../constants.dart';
 
-final _firestore = FirebaseFirestore.instance;
 final _auth = FirebaseAuth.instance;
+final userRef = FirebaseFirestore.instance.collection('users');
+UserDetails currentUser;
 
 class SignUpScreen extends StatefulWidget {
   static const routeName = '/signup-screen';
@@ -18,12 +21,11 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  DatabaseReference databaseReference =
-      FirebaseDatabase.instance.reference().child('users');
   final _surnameFocusNode = FocusNode();
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
   final _form = GlobalKey<FormState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   TextEditingController nameController = TextEditingController();
   TextEditingController surnameController = TextEditingController();
@@ -45,23 +47,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void _saveForm() async {
+    setState(() {
+      showSpinner = true;
+    });
     _auth
         .createUserWithEmailAndPassword(
             email: emailController.text, password: passwordController.text)
         .then((result) {
-      _firestore.collection('users').doc(result.user.uid).set({
+      userRef.doc(result.user.uid).set({
         "name": nameController.text,
         "surname": surnameController.text,
         "email": emailController.text,
-      }).then((res) {
+      }).then((res) async {
+        DocumentSnapshot doc = await userRef.doc(_auth.currentUser.uid).get();
+        currentUser = UserDetails.fromDocument(doc);
+        print(currentUser);
+        print(currentUser.email);
+        username = currentUser.name;
+        SnackBar snackBar = SnackBar(content: Text('Welcome, $username'));
+        _scaffoldKey.currentState.showSnackBar(snackBar);
         setState(() {
           showSpinner = false;
         });
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
-        );
+        Timer(Duration(seconds: 2), () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => HomeScreen()),
+          );
+        });
       });
     }).catchError((err) {
       showDialog(
@@ -89,6 +102,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Container(

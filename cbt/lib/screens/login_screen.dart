@@ -1,4 +1,8 @@
+import 'dart:async';
+
+import 'package:cbt/models/users.dart';
 import 'package:cbt/screens/home_screen.dart';
+import 'package:cbt/screens/signup_Screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +13,8 @@ import '../constants.dart';
 
 final _auth = FirebaseAuth.instance;
 final _firestore = FirebaseFirestore.instance;
+UserDetails currentUserDetails;
+String username;
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login-screen';
@@ -17,6 +23,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
   TextEditingController emailController = TextEditingController();
@@ -48,14 +55,14 @@ class _LoginScreenState extends State<LoginScreen> {
     final UserCredential authResult =
         await _auth.signInWithCredential(credential);
     final User user = authResult.user;
-    print(user.displayName);
+    // print(user.displayName);
 
     assert(!user.isAnonymous);
     assert(await user.getIdToken() != null);
 
     final User currentUser = _auth.currentUser;
     assert(user.uid == currentUser.uid);
-    var a = _firestore.collection('users').doc(user.uid);
+    var a = userRef.doc(user.uid);
     if (a.id.isEmpty) {
       _firestore.collection('users').doc(user.uid).set({
         "name": user.displayName.substring(0, user.displayName.indexOf(' ')),
@@ -63,8 +70,19 @@ class _LoginScreenState extends State<LoginScreen> {
             user.displayName.indexOf(' ') + 1, user.displayName.length),
         "email": user.email,
       });
+      DocumentSnapshot doc = await userRef.doc(_auth.currentUser.uid).get();
+      currentUserDetails = UserDetails.fromDocument(doc);
+
+      print(currentUser);
+      print(currentUser.email);
+      username = currentUser.displayName;
       print('db executed');
     }
+    DocumentSnapshot doc = await userRef.doc(_auth.currentUser.uid).get();
+    currentUserDetails = UserDetails.fromDocument(doc);
+    print(currentUser);
+    print(currentUser.email);
+    username = currentUser.displayName;
     print('db not executed');
 
     return 'signInWithGoogle succeeded: $user';
@@ -76,17 +94,29 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _saveForm() async {
+    setState(() {
+      showSpinner = true;
+    });
     _auth
         .signInWithEmailAndPassword(
             email: emailController.text, password: passwordController.text)
-        .then((result) {
+        .then((result) async {
+      DocumentSnapshot doc = await userRef.doc(_auth.currentUser.uid).get();
+      currentUser = UserDetails.fromDocument(doc);
+      print(currentUser);
+      print(currentUser.email);
+      username = currentUser.name;
+      SnackBar snackBar = SnackBar(content: Text('Welcome, $username'));
+      _scaffoldKey.currentState.showSnackBar(snackBar);
       setState(() {
         showSpinner = false;
       });
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-      );
+      Timer(Duration(seconds: 2), () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
+      });
     }).catchError((err) {
       print(err.message);
       showDialog(
@@ -114,6 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Container(
@@ -147,12 +178,23 @@ class _LoginScreenState extends State<LoginScreen> {
                   buildSignupForm(context),
                   GestureDetector(
                     onTap: () {
+                      setState(() {
+                        showSpinner = true;
+                      });
                       signInWithGoogle().whenComplete(() {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) {
-                            return HomeScreen();
-                          },
-                        ));
+                        SnackBar snackBar =
+                            SnackBar(content: Text('Welcome, $username'));
+                        _scaffoldKey.currentState.showSnackBar(snackBar);
+                        setState(() {
+                          showSpinner = false;
+                        });
+                        Timer(Duration(seconds: 2), () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) {
+                              return HomeScreen();
+                            },
+                          ));
+                        });
                       });
                     },
                     child: Card(
