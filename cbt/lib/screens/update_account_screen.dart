@@ -16,7 +16,6 @@ class UpdateAccountScreen extends StatefulWidget {
 class _UpdateAccountScreenState extends State<UpdateAccountScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   UserDetails user;
-  final _nameFocusNode = FocusNode();
   final _surnameFocusNode = FocusNode();
   final _emailFocusNode = FocusNode();
   final _form = GlobalKey<FormState>();
