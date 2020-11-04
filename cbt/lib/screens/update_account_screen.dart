@@ -1,3 +1,8 @@
+import 'package:cbt/models/users.dart';
+import 'package:cbt/screens/home_screen.dart';
+import 'package:cbt/screens/signup_Screen.dart';
+import 'package:cbt/widgets/progress.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../constants.dart';
@@ -9,51 +14,112 @@ class UpdateAccountScreen extends StatefulWidget {
 }
 
 class _UpdateAccountScreenState extends State<UpdateAccountScreen> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  UserDetails user;
   final _surnameFocusNode = FocusNode();
   final _emailFocusNode = FocusNode();
-  final _passwordFocusNode = FocusNode();
   final _form = GlobalKey<FormState>();
+  final _surnameController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+
+  bool _isNameValid = true;
+  bool _isSurnameValid = true;
+  bool _isEmailValid = true;
+
+  bool isReadOnly = true;
+  bool isLoading = false;
 
   @override
   void dispose() {
     _surnameFocusNode.dispose();
     _emailFocusNode.dispose();
-    _passwordFocusNode.dispose();
     super.dispose();
   }
 
-  void _saveForm() {
-    final isValid = _form.currentState.validate();
-    if (!isValid) {
-      return;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getUser();
+  }
+
+  getUser() async {
+    setState(() {
+      isLoading = true;
+    });
+    DocumentSnapshot doc = await userRef.doc(auth.currentUser.uid).get();
+    user = UserDetails.fromDocument(doc);
+
+    print(auth.currentUser.uid);
+    _nameController.text = user.name;
+    _emailController.text = user.email;
+    print(user.surname);
+    _surnameController.text = user.surname;
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  void _updateProfileData() {
+    setState(() {
+      _nameController.text.trim().length < 3 || _nameController.text.isEmpty
+          ? _isNameValid = false
+          : _isNameValid = true;
+
+      _surnameController.text.trim().length < 3 ||
+              _surnameController.text.isEmpty
+          ? _isSurnameValid = false
+          : _isSurnameValid = true;
+
+      !_emailController.text.contains('@') || _emailController.text.isEmpty
+          ? _isEmailValid = false
+          : _isEmailValid = true;
+    });
+
+    if (_isNameValid && _isSurnameValid && _isEmailValid) {
+      userRef.doc(auth.currentUser.uid).update({
+        'name': _nameController.text,
+        'surname': _surnameController.text,
+        'email': _emailController.text,
+      });
+      SnackBar snackBar = SnackBar(content: Text('Profile Updated!'));
+      _scaffoldKey.currentState.showSnackBar(snackBar);
     }
-    _form.currentState.save();
+    setState(() {
+      isReadOnly = true;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: kPrimaryColor,
         elevation: 0,
         title: avatar,
+        centerTitle: true,
       ),
-      body: Container(
-        height: double.infinity,
-        decoration: BoxDecoration(gradient: kBackgroundGradient),
-        child: SingleChildScrollView(
-          child: SafeArea(
-            child: Column(
-              children: <Widget>[
-                // avatar,
-                SizedBox(height: 30),
-                buildTextIntro(),
-                buildSignupForm(context),
-              ],
+      body: isLoading
+          ? circularProgress()
+          : Container(
+              height: double.infinity,
+              decoration: BoxDecoration(gradient: kBackgroundGradient),
+              child: SingleChildScrollView(
+                child: SafeArea(
+                  child: Column(
+                    children: <Widget>[
+                      // avatar,
+                      SizedBox(height: 30),
+                      buildTextIntro(),
+                      buildSignupForm(context),
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 
@@ -66,14 +132,33 @@ class _UpdateAccountScreenState extends State<UpdateAccountScreen> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Text(
-          'Update your account below\n\n\nEdit >>',
-          style: kStyleTextWhite,
-          textAlign: TextAlign.center,
+        child: Column(
+          children: [
+            Text(
+              'Update your account below',
+              style: kStyleTextWhite,
+              textAlign: TextAlign.center,
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 12.0),
+              child: FlatButton(
+                  onPressed: () {
+                    setState(() {
+                      isReadOnly = !isReadOnly;
+                    });
+                  },
+                  child: Text(
+                    'Edit >>',
+                    style: kStyleTextWhite,
+                  )),
+            )
+          ],
         ),
       ),
     );
   }
+
+  //
 
   Container buildSignupForm(BuildContext context) {
     return Container(
@@ -85,8 +170,12 @@ class _UpdateAccountScreenState extends State<UpdateAccountScreen> {
             buildLabel('Name'),
             SizedBox(height: 8),
             TextFormField(
+              autofocus: true,
+              readOnly: isReadOnly,
+              controller: _nameController,
               style: kStyleTextBlack,
-              decoration: buildInputDecoration(),
+              decoration: buildInputDecoration(
+                  isValid: _isNameValid, text: 'Name too short!'),
               textInputAction: TextInputAction.next,
               onFieldSubmitted: (_) {
                 FocusScope.of(context).requestFocus(_surnameFocusNode);
@@ -103,8 +192,11 @@ class _UpdateAccountScreenState extends State<UpdateAccountScreen> {
             buildLabel('Surname'),
             SizedBox(height: 8),
             TextFormField(
+              readOnly: isReadOnly,
+              controller: _surnameController,
               style: kStyleTextBlack,
-              decoration: buildInputDecoration(),
+              decoration: buildInputDecoration(
+                  isValid: _isSurnameValid, text: 'Surname too short!'),
               textInputAction: TextInputAction.next,
               focusNode: _surnameFocusNode,
               onFieldSubmitted: (_) {
@@ -122,53 +214,21 @@ class _UpdateAccountScreenState extends State<UpdateAccountScreen> {
             buildLabel('Email'),
             SizedBox(height: 8),
             TextFormField(
+              readOnly: isReadOnly,
+              controller: _emailController,
               style: kStyleTextBlack,
               keyboardType: TextInputType.emailAddress,
-              decoration: buildInputDecoration(),
+              decoration: buildInputDecoration(
+                  isValid: _isEmailValid, text: 'Invalid Email format!'),
               textInputAction: TextInputAction.next,
-              focusNode: _emailFocusNode,
-              onFieldSubmitted: (_) {
-                FocusScope.of(context).requestFocus(_passwordFocusNode);
-              },
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please provide your email';
-                }
-                if (!value.contains('@')) {
-                  return 'Please type a correct email';
-                }
-                return null;
-              },
               onSaved: (_) {},
             ),
             SizedBox(height: 12),
-            buildLabel('Password'),
-            SizedBox(height: 8),
-            TextFormField(
-              style: kStyleTextBlack,
-              obscureText: true,
-              decoration: buildInputDecoration(),
-              textInputAction: TextInputAction.done,
-              focusNode: _passwordFocusNode,
-              onFieldSubmitted: (_) {},
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please provide your password';
-                }
-                if (value.length <= 8) {
-                  return 'Password should be at least 8 characters!';
-                }
-                return null;
-              },
-              onSaved: (_) {
-                Navigator.of(context).pop();
-              },
-            ),
             SizedBox(height: 30),
             RaisedButton(
               shape: kShapeButton,
               padding: EdgeInsets.all(0),
-              onPressed: _saveForm,
+              onPressed: _updateProfileData,
               child: Container(
                 width: 150,
                 alignment: Alignment.center,
@@ -186,15 +246,15 @@ class _UpdateAccountScreenState extends State<UpdateAccountScreen> {
     );
   }
 
-  InputDecoration buildInputDecoration() {
+  InputDecoration buildInputDecoration({bool isValid, String text}) {
     return InputDecoration(
-      filled: true,
-      fillColor: Colors.white,
-      border: buildOutlineInputBorder(Colors.transparent),
-      enabledBorder: buildOutlineInputBorder(Colors.transparent),
-      focusedBorder: buildOutlineInputBorder(Colors.transparent),
-      errorBorder: buildOutlineInputBorder(Colors.red),
-    );
+        filled: true,
+        fillColor: Colors.white,
+        border: buildOutlineInputBorder(Colors.transparent),
+        enabledBorder: buildOutlineInputBorder(Colors.transparent),
+        focusedBorder: buildOutlineInputBorder(Colors.transparent),
+        errorBorder: buildOutlineInputBorder(Colors.red),
+        errorText: isValid ? null : text);
   }
 
   Align buildLabel(String label) {

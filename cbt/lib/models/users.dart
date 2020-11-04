@@ -10,7 +10,7 @@ class UserDetails {
   factory UserDetails.fromDocument(DocumentSnapshot doc) {
     return UserDetails(
       name: doc['name'],
-      surname: doc['name'],
+      surname: doc['surname'],
       email: doc['email'],
     );
   }

@@ -15,7 +15,7 @@ import 'package:flutter_dialogflow/v2/dialogflow_v2.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 User loggedInUser;
-
+final auth = FirebaseAuth.instance;
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home-screen';
 
@@ -24,7 +24,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _auth = FirebaseAuth.instance;
+  
   final _controller = TextEditingController();
   String userName;
   var userData;
@@ -71,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void getCurrentUser() async {
     try {
-      final user = _auth.currentUser;
+      final user = auth.currentUser;
       // print(user);
       if (user != null) {
         loggedInUser = user;
@@ -175,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   'Sign Out',
                 ),
                 onTap: () {
-                  _auth.signOut();
+                  auth.signOut();
                   SchedulerBinding.instance.addPostFrameCallback((_) {
                     //this will remove all the route stacks and make the landing page the root.
                     Navigator.pushNamedAndRemoveUntil(
@@ -259,10 +259,9 @@ class _HomeScreenState extends State<HomeScreen> {
           elevation: 0,
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              title: Text(''),
-              backgroundColor: Color(0x20000000)
-            ),
+                icon: Icon(Icons.settings),
+                title: Text(''),
+                backgroundColor: Color(0x20000000)),
             BottomNavigationBarItem(
               icon: Icon(Icons.add),
               title: Text(''),
