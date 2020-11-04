@@ -3,6 +3,7 @@ import 'package:cbt/screens/goal_entry/goal_entry_screen1.dart';
 import 'package:cbt/screens/goal_entry/goal_entry_screen2.dart';
 import 'package:cbt/screens/goal_entry/goal_entry_screen3.dart';
 import 'package:cbt/screens/login_screen.dart';
+import 'package:cbt/screens/signup_Screen.dart';
 import 'package:cbt/screens/update_account_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -44,7 +45,10 @@ class _ToolkitState extends State<Toolkit> {
                 'Account',
                 () {
                   Navigator.of(context)
-                      .pushNamed(UpdateAccountScreen.routeName);
+                      .pushNamed(UpdateAccountScreen.routeName)
+                      .then((value) {
+                    setState(() {});
+                  });
                 },
               ),
               buildToolkitItem(
